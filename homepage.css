@@ -264,6 +264,11 @@ nav {
   font-size: 12px;
 }
 
+header nav a {
+  font-family: var(--sans);
+
+}
+
 nav a:hover,
 .social a:hover {
   color: var(--accent);
@@ -274,6 +279,7 @@ nav a:hover,
   border: 1px solid rgba(182, 167, 255, 0.48);
   border-radius: 3px;
   color: var(--accent);
+  font-family: var(--sans);
   font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -290,7 +296,7 @@ nav a:hover,
 
 .eyebrow {
   color: var(--accent);
-  font-size: 10px;
+  font-size: 15px;
   letter-spacing: 0.23em;
   text-transform: uppercase;
   font-weight: 700;
@@ -328,6 +334,7 @@ nav a:hover,
   padding: 12px 18px;
   background: var(--accent);
   color: #17152b;
+  font-family: var(--sans);
   font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -924,6 +931,7 @@ a:focus-visible {
   border: 1px solid var(--line);
   padding: 9px 13px;
   color: var(--muted);
+  font-family: var(--sans);
   font-size: 10px;
   letter-spacing: 0.06em;
   transition: color 180ms ease, border-color 180ms ease, transform 180ms ease;
