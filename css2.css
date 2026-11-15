@@ -178,3 +178,78 @@
   src: url(https://fonts.gstatic.com/s/playfairdisplay/v40/nuFiD-vYSZviVYUb_rj3ij__anPXDTzYgA.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
+
+:root {
+  --bg: #080b1b;
+  --panel: rgba(18, 22, 48, 0.82);
+  --text: #f3f1ff;
+  --muted: #bbb9d4;
+  --gold: #b6a7ff;
+  --line: rgba(201, 194, 255, 0.18);
+}
+
+body {
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(ellipse at 18% 18%, rgba(86, 65, 184, 0.28), transparent 34%),
+    radial-gradient(ellipse at 82% 32%, rgba(29, 100, 150, 0.2), transparent 30%),
+    radial-gradient(ellipse at 58% 78%, rgba(85, 43, 139, 0.2), transparent 38%),
+    radial-gradient(1px 1px at 8% 12%, #fff 99%, transparent),
+    radial-gradient(1px 1px at 22% 68%, #c7c3ff 99%, transparent),
+    radial-gradient(1px 1px at 37% 29%, #fff 99%, transparent),
+    radial-gradient(1.5px 1.5px at 53% 58%, #e8ddff 99%, transparent),
+    radial-gradient(1px 1px at 69% 17%, #fff 99%, transparent),
+    radial-gradient(1px 1px at 83% 73%, #c7e9ff 99%, transparent),
+    radial-gradient(1px 1px at 94% 43%, #fff 99%, transparent);
+  background-attachment: fixed;
+}
+
+.nav-cta {
+  border-color: rgba(182, 167, 255, 0.48);
+}
+
+.portrait {
+  background: radial-gradient(ellipse at 60% 30%, #6f65bd 0, #342c76 32%, #171a43 66%, #090b1d 100%);
+  box-shadow: inset 0 0 80px rgba(134, 117, 255, 0.14);
+}
+
+.portrait:before {
+  background: linear-gradient(120deg, #0b0d27, #393477 48%, #11132f 82%);
+  box-shadow: 0 0 80px rgba(5, 5, 25, 0.9);
+}
+
+.portrait:after {
+  background: linear-gradient(110deg, #e1d4ff, #a294eb 52%, #60568e);
+  box-shadow: 0 -20px 0 8px #211d43;
+}
+
+.featured,
+.card,
+.quote {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(12px);
+}
+
+.feature-art {
+  background: radial-gradient(circle at 50% 50%, #5746a4, #29265e 52%, #111630 100%);
+}
+
+.feature-art:before {
+  border-color: rgba(221, 216, 255, 0.5);
+  box-shadow: 0 0 0 25px rgba(221, 216, 255, 0.06), 0 0 0 55px rgba(221, 216, 255, 0.04);
+}
+
+.disc {
+  background: repeating-radial-gradient(circle, #151733 0 2px, #383263 3px 4px);
+  box-shadow: 0 18px 50px rgba(5, 6, 25, 0.65);
+}
+
+.card:hover {
+  border-color: rgba(182, 167, 255, 0.58);
+}
+
+a:focus-visible {
+  outline: 2px solid #d6ceff;
+  outline-offset: 4px;
+}
