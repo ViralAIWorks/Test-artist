@@ -876,3 +876,100 @@ a:focus-visible {
     transition: none !important;
   }
 }
+
+.hero-copy {
+  animation: rise-in 700ms both;
+}
+
+.portrait {
+  animation: rise-in 850ms 120ms both;
+  transition: box-shadow 300ms ease;
+}
+
+.portrait:hover {
+  box-shadow: inset 0 0 80px rgba(134, 117, 255, 0.14), 0 16px 48px rgba(5, 6, 25, 0.35);
+}
+
+.intro-panel,
+.timeline-item,
+.interest {
+  transition: border-color 220ms ease, transform 220ms ease;
+}
+
+.intro-panel:hover,
+.timeline-item:hover,
+.interest:hover {
+  border-color: rgba(182, 167, 255, 0.5);
+  transform: translateY(-4px);
+}
+
+.feature-photo img {
+  transition: transform 500ms ease;
+}
+
+.feature-photo:hover img {
+  transform: scale(1.035);
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 650ms ease, transform 650ms cubic-bezier(0.2, 0.65, 0.3, 1);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-stagger > :nth-child(2) {
+  transition-delay: 80ms;
+}
+
+.reveal-stagger > :nth-child(3) {
+  transition-delay: 160ms;
+}
+
+.reveal-stagger > :nth-child(4) {
+  transition-delay: 240ms;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-copy,
+  .portrait {
+    animation: none;
+  }
+
+  .portrait,
+  .intro-panel,
+  .timeline-item,
+  .interest,
+  .feature-photo img,
+  .reveal {
+    transition: none;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  .intro-panel:hover,
+  .timeline-item:hover,
+  .interest:hover,
+  .feature-photo:hover img {
+    transform: none;
+  }
+}
