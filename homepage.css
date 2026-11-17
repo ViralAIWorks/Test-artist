@@ -219,6 +219,7 @@ html {
 
 body {
   margin: 0;
+  padding-top: 96px;
   color: var(--text);
   font-family: var(--sans);
   line-height: 1.65;
@@ -240,11 +241,21 @@ img {
 }
 
 header {
-  height: 76px;
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  z-index: 1000;
+  transform: translateX(-50%);
+  height: 68px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid var(--line);
+  padding-inline: 24px;
+  border: 1px solid rgba(201, 194, 255, 0.22);
+  border-radius: 999px;
+  background: linear-gradient(115deg, rgba(29, 32, 63, 0.94), rgba(18, 30, 50, 0.92));
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.3), inset 0 1px rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px);
 }
 
 .brand {
@@ -782,10 +793,16 @@ a:focus-visible {
     width: min(100% - 34px, 560px);
   }
 
+  body {
+    padding-top: 85px;
+  }
+
   header {
+    top: 10px;
     height: auto;
     min-height: 65px;
     gap: 12px;
+    padding-inline: 16px;
   }
 
   nav {

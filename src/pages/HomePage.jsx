@@ -23,7 +23,7 @@ function HomePage() {
               Khám phá âm nhạc&nbsp; ↗
             </Link>
             <Link className="button alt" to="/profile.html">
-              Tìm hiểu Karina
+              Tìm hiểu thêm
             </Link>
           </div>
         </div>
@@ -388,7 +388,7 @@ function HomePage() {
             target="_blank"
             rel="noreferrer"
           >
-            Trang nghệ sĩ SM&nbsp; ↗
+            SM Entertainment&nbsp; ↗
           </a>
         </div>
       </section>

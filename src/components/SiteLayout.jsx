@@ -6,7 +6,7 @@ const pages = [
   { path: "/music.html", label: "Âm nhạc" },
   { path: "/achievements.html", label: "Dấu ấn" },
   { path: "/interests.html", label: "Ngoài sân khấu" },
-  { path: "/gallery.html", label: "Thư viện ảnh" },
+  { path: "/gallery.html", label: "Thư viện" },
 ];
 
 export function SiteHeader() {
