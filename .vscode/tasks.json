@@ -2,14 +2,14 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "Preview Karina Profile",
+			"label": "Start Karina React app",
 			"type": "shell",
-			"command": "python3",
+			"command": "npm",
 			"args": [
-				"-m",
-				"http.server",
-				"8000",
-				"--bind",
+				"run",
+				"dev",
+				"--",
+				"--host",
 				"0.0.0.0"
 			],
 			"isBackground": true,
