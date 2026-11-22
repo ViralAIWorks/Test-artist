@@ -13,7 +13,7 @@
     "imageLicense": "CC BY 3.0",
     "sections": [
       {
-        "type": "stacked",
+        "type": "split",
         "title": "aespa - logo",
         "text": "Logo của aespa là tên gọi và biểu tượng hình ảnh của nhóm (được thành lập bởi SM Entertainment), phản ánh khái niệm \"Avatar X Experience\" và \"khía cạnh\" (hai mặt) của họ.",
         "image": "https://i.pinimg.com/736x/a4/80/07/a4800732640be4ad44c46b4488ad0575.jpg",
