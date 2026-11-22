@@ -1,20 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Credit, SubpageHero, SubpageNav } from "../components/SiteLayout.jsx";
+import content from "../data/content.json";
 
 function AchievementsPage() {
+  const page = content.pages.achievements;
   return (
     <main className="wrap subpage">
       <SubpageHero
-        eyebrow="03 / Hành trình"
-        title={
-          <>
-            Dấu ấn qua
-            <br />
-            <em>từng chặng đường</em>
-          </>
-        }
-        description="Từ sân khấu debut đến những cột mốc solo và giải thưởng truyền hình: hành trình của Karina mở rộng qua nhiều định dạng. Thành tích nhóm được ghi rõ là dấu ấn chung của aespa."
+        eyebrow={page.eyebrow}
+        title={page.title}
+        description={page.description}
       />
       <SubpageNav activePage="/achievements.html" />
       <div className="subpage-content">

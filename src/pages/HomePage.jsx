@@ -1,23 +1,21 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Credit } from "../components/SiteLayout.jsx";
+import content from "../data/content.json";
 
 function HomePage() {
+  const { home, stats } = content;
   return (
     <main>
       <div className="wrap hero" id="home">
         <div className="hero-copy">
-          <div className="eyebrow">Yu Ji-min · aespa · Seoul, South Korea</div>
+          <div className="eyebrow">{home.eyebrow}</div>
           <h1>
-            Karina
+            {home.title}
             <br />
-            <em>in focus</em>
+            <em>{home.subtitle}</em>
           </h1>
-          <p>
-            Trưởng nhóm aespa với thần thái sân khấu sắc lạnh, vũ đạo mạnh mẽ và màu sắc riêng
-            trong từng màn trình diễn. Từ thế giới siêu thực của aespa đến những dự án solo,
-            Karina luôn biết cách khiến khán giả phải dõi theo.
-          </p>
+          <p>{home.description}</p>
           <div className="actions">
             <Link className="button" to="/music.html">
               Khám phá âm nhạc&nbsp; ↗
@@ -29,44 +27,33 @@ function HomePage() {
         </div>
         <div className="portrait">
           <img
-            src="https://upload.wikimedia.org/wikipedia/commons/0/08/Aespa_Karina_2024_MMA_2.jpg"
-            alt="Karina cùng aespa tại Melon Music Awards 2024"
+            src={home.image}
+            alt={home.imageAlt}
             fetchPriority="high"
           />
-          <span className="portrait-mark">AESPA · LEADER</span>
-          <span className="portrait-label">Yu Ji-min — on stage, in her element.</span>
+          <span className="portrait-mark">{home.imageBadge}</span>
+          <span className="portrait-label">{home.imageCaption}</span>
           <span className="hero-credit">
             Ảnh:{" "}
             <a
-              href="https://commons.wikimedia.org/wiki/File:Aespa_Karina_2024_MMA_2.jpg"
+              href={home.imageCreditUrl}
               target="_blank"
               rel="noreferrer"
             >
-              10Asia / Wikimedia Commons
-            </a>{" "}
-            · CC BY 3.0
+              {home.imageCredit}
+            </a>{" "}· {home.imageLicense}
           </span>
         </div>
       </div>
 
       <div className="wrap">
         <div className="stats" aria-label="Thông tin nhanh">
-          <div className="stat">
-            <strong>2000</strong>
-            <span>Năm sinh</span>
-          </div>
-          <div className="stat">
-            <strong>2020</strong>
-            <span>Ra mắt cùng aespa</span>
-          </div>
-          <div className="stat">
-            <strong>Leader</strong>
-            <span>Vai trò trong nhóm</span>
-          </div>
-          <div className="stat">
-            <strong>Rapper · Vocal</strong>
-            <span>Trình diễn</span>
-          </div>
+          {stats.map((stat) => (
+            <div className="stat" key={`${stat.value}-${stat.label}`}>
+              <strong>{stat.value}</strong>
+              <span>{stat.label}</span>
+            </div>
+          ))}
         </div>
       </div>
 

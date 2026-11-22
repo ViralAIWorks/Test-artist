@@ -1,12 +1,14 @@
 import React, { useEffect } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { SiteFooter, SiteHeader } from "./components/SiteLayout.jsx";
+import AdminPage from "./pages/AdminPage.jsx";
 import AchievementsPage from "./pages/AchievementsPage.jsx";
 import GalleryPage from "./pages/GalleryPage.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import InterestsPage from "./pages/InterestsPage.jsx";
 import MusicPage from "./pages/MusicPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
+import content from "./data/content.json";
 
 const pageMetadata = {
   "/": {
@@ -20,26 +22,24 @@ const pageMetadata = {
       "Hồ sơ Karina (Yu Ji-min) — trưởng nhóm aespa, nghệ sĩ solo và gương mặt đa tài của K-pop.",
   },
   "/profile.html": {
-    title: "Profile | Karina in focus",
-    description: "Hồ sơ và tiểu sử Karina (Yu Ji-min), trưởng nhóm aespa.",
+    title: `${content.pages.profile.title} | Karina in focus`,
+    description: content.pages.profile.description,
   },
   "/music.html": {
-    title: "Âm nhạc | Karina in focus",
-    description:
-      "Khám phá các dấu mốc âm nhạc của Karina cùng aespa và những sân khấu solo.",
+    title: `${content.pages.music.title} | Karina in focus`,
+    description: content.pages.music.description,
   },
   "/achievements.html": {
-    title: "Dấu ấn sự nghiệp | Karina in focus",
-    description: "Các cột mốc trong sự nghiệp của Karina và aespa.",
+    title: `${content.pages.achievements.title} | Karina in focus`,
+    description: content.pages.achievements.description,
   },
   "/interests.html": {
-    title: "Ngoài sân khấu | Karina in focus",
-    description:
-      "Âm nhạc yêu thích, nguồn cảm hứng và những hoạt động ngoài sân khấu của Karina.",
+    title: `${content.pages.interests.title} | Karina in focus`,
+    description: content.pages.interests.description,
   },
   "/gallery.html": {
-    title: "Thư viện | Karina in focus",
-    description: "Thư viện ảnh Karina với nguồn ảnh và ghi công.",
+    title: `${content.pages.gallery.title} | Karina in focus`,
+    description: content.pages.gallery.description,
   },
 };
 
@@ -99,6 +99,10 @@ function App() {
 
     return () => observer.disconnect();
   }, [location.hash, location.pathname]);
+
+  if (location.pathname.replace(/\/+$/, "") === "/admin") {
+    return <AdminPage />;
+  }
 
   return (
     <>

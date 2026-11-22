@@ -1,19 +1,15 @@
 import React from "react";
 import { SubpageHero, SubpageNav } from "../components/SiteLayout.jsx";
+import content from "../data/content.json";
 
 function GalleryPage() {
+  const page = content.pages.gallery;
   return (
     <main className="wrap subpage">
       <SubpageHero
-        eyebrow="05 / Thư viện ảnh"
-        title={
-          <>
-            Khoảnh khắc
-            <br />
-            <em>được lưu lại</em>
-          </>
-        }
-        description="Từ thảm đỏ đến hậu trường ghi hình, mỗi bức ảnh là một lát cắt khác nhau trong lịch trình của Karina. Chọn dòng ghi công để xem trang nguồn và điều khoản sử dụng ảnh."
+        eyebrow={page.eyebrow}
+        title={page.title}
+        description={page.description}
       />
       <SubpageNav activePage="/gallery.html" />
       <div className="subpage-content">

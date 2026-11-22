@@ -1,0 +1,48 @@
+{
+  "home": {
+    "eyebrow": "Yu Ji-min · aespa · Seoul, South Korea",
+    "title": "Karina",
+    "subtitle": "in focus",
+    "description": "Trưởng nhóm aespa với thần thái sân khấu sắc lạnh, vũ đạo mạnh mẽ và màu sắc riêng trong từng màn trình diễn. Từ thế giới siêu thực của aespa đến những dự án solo, Karina luôn biết cách khiến khán giả phải dõi theo.",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/0/08/Aespa_Karina_2024_MMA_2.jpg",
+    "imageAlt": "Karina cùng aespa tại Melon Music Awards 2024",
+    "imageBadge": "AESPA · LEADER",
+    "imageCaption": "Yu Ji-min — on stage, in her element.",
+    "imageCredit": "10Asia / Wikimedia Commons",
+    "imageCreditUrl": "https://commons.wikimedia.org/wiki/File:Aespa_Karina_2024_MMA_2.jpg",
+    "imageLicense": "CC BY 3.0"
+  },
+  "stats": [
+    { "value": "2000", "label": "Năm sinh" },
+    { "value": "2020", "label": "Ra mắt cùng aespa" },
+    { "value": "Leader", "label": "Vai trò trong nhóm" },
+    { "value": "Rapper · Vocal", "label": "Trình diễn" }
+  ],
+  "pages": {
+    "profile": {
+      "eyebrow": "01 / Chân dung nghệ sĩ",
+      "title": "Vũ trụ của Yu Ji-min",
+      "description": "Trước khi trở thành gương mặt đại diện cho thế giới quan aespa, Yu Ji-min đã trải qua nhiều năm luyện tập tại SM. Con đường của cô bắt đầu từ performance và dần mở rộng sang âm nhạc, dẫn chương trình cùng các dự án giải trí."
+    },
+    "music": {
+      "eyebrow": "02 / Âm nhạc",
+      "title": "Những sắc thái trên sân khấu",
+      "description": "Âm nhạc của aespa thay đổi giữa những lớp synth điện tử và hook giàu năng lượng. Trên sân khấu solo, Karina đưa chất hip-hop cùng phần dàn dựng do chính cô góp sức thành tâm điểm."
+    },
+    "achievements": {
+      "eyebrow": "03 / Hành trình",
+      "title": "Dấu ấn qua từng chặng đường",
+      "description": "Từ sân khấu debut đến những cột mốc solo và giải thưởng truyền hình: hành trình của Karina mở rộng qua nhiều định dạng. Thành tích nhóm được ghi rõ là dấu ấn chung của aespa."
+    },
+    "interests": {
+      "eyebrow": "04 / Những mảng màu khác",
+      "title": "Gu riêng & nguồn cảm hứng",
+      "description": "Những lựa chọn âm nhạc và cách Karina tham gia xây dựng sân khấu hé lộ một phần gu thẩm mỹ phía sau hình ảnh performer."
+    },
+    "gallery": {
+      "eyebrow": "05 / Thư viện ảnh",
+      "title": "Khoảnh khắc được lưu lại",
+      "description": "Từ thảm đỏ đến hậu trường ghi hình, mỗi bức ảnh là một lát cắt khác nhau trong lịch trình của Karina. Chọn dòng ghi công để xem trang nguồn và điều khoản sử dụng ảnh."
+    }
+  }
+}

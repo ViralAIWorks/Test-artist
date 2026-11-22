@@ -1,19 +1,15 @@
 import React from "react";
 import { Credit, SubpageHero, SubpageNav } from "../components/SiteLayout.jsx";
+import content from "../data/content.json";
 
 function ProfilePage() {
+  const page = content.pages.profile;
   return (
     <main className="wrap subpage">
       <SubpageHero
-        eyebrow="01 / Chân dung nghệ sĩ"
-        title={
-          <>
-            Vũ trụ của
-            <br />
-            <em>Yu Ji-min</em>
-          </>
-        }
-        description="Trước khi trở thành gương mặt đại diện cho thế giới quan aespa, Yu Ji-min đã trải qua nhiều năm luyện tập tại SM. Con đường của cô bắt đầu từ performance và dần mở rộng sang âm nhạc, dẫn chương trình cùng các dự án giải trí."
+        eyebrow={page.eyebrow}
+        title={page.title}
+        description={page.description}
       />
       <SubpageNav activePage="/profile.html" />
       <div className="subpage-content">

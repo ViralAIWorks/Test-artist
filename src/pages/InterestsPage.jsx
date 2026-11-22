@@ -1,19 +1,15 @@
 import React from "react";
 import { Credit, SubpageHero, SubpageNav } from "../components/SiteLayout.jsx";
+import content from "../data/content.json";
 
 function InterestsPage() {
+  const page = content.pages.interests;
   return (
     <main className="wrap subpage">
       <SubpageHero
-        eyebrow="04 / Những mảng màu khác"
-        title={
-          <>
-            Gu riêng &amp;
-            <br />
-            <em>nguồn cảm hứng</em>
-          </>
-        }
-        description="Những lựa chọn âm nhạc và cách Karina tham gia xây dựng sân khấu hé lộ một phần gu thẩm mỹ phía sau hình ảnh performer."
+        eyebrow={page.eyebrow}
+        title={page.title}
+        description={page.description}
       />
       <SubpageNav activePage="/interests.html" />
       <div className="subpage-content">

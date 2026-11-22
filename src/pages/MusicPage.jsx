@@ -1,20 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Credit, SubpageHero, SubpageNav } from "../components/SiteLayout.jsx";
+import content from "../data/content.json";
 
 function MusicPage() {
+  const page = content.pages.music;
   return (
     <main className="wrap subpage">
       <SubpageHero
-        eyebrow="02 / Âm nhạc"
-        title={
-          <>
-            Những sắc thái
-            <br />
-            <em>trên sân khấu</em>
-          </>
-        }
-        description="Âm nhạc của aespa thay đổi giữa những lớp synth điện tử và hook giàu năng lượng. Trên sân khấu solo, Karina đưa chất hip-hop cùng phần dàn dựng do chính cô góp sức thành tâm điểm."
+        eyebrow={page.eyebrow}
+        title={page.title}
+        description={page.description}
       />
       <SubpageNav activePage="/music.html" />
       <div className="subpage-content">
