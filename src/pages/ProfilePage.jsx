@@ -1,5 +1,5 @@
 import React from "react";
-import { Credit, SubpageHero, SubpageNav } from "../components/SiteLayout.jsx";
+import { ContentSections, Credit, SubpageHero, SubpageNav } from "../components/SiteLayout.jsx";
 import content from "../data/content.json";
 
 function ProfilePage() {
@@ -71,6 +71,7 @@ function ProfilePage() {
             CC BY 3.0
           </a>
         </p>
+        <ContentSections sections={page.sections} />
       </div>
     </main>
   );

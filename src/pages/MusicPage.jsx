@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Credit, SubpageHero, SubpageNav } from "../components/SiteLayout.jsx";
+import { ContentSections, Credit, SubpageHero, SubpageNav } from "../components/SiteLayout.jsx";
 import content from "../data/content.json";
 
 function MusicPage() {
@@ -90,6 +90,7 @@ function MusicPage() {
             Xem dấu ấn sự nghiệp&nbsp; ↗
           </Link>
         </div>
+        <ContentSections sections={page.sections} />
       </div>
     </main>
   );

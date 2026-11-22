@@ -1,5 +1,5 @@
 import React from "react";
-import { SubpageHero, SubpageNav } from "../components/SiteLayout.jsx";
+import { ContentSections, SubpageHero, SubpageNav } from "../components/SiteLayout.jsx";
 import content from "../data/content.json";
 
 function GalleryPage() {
@@ -75,6 +75,7 @@ function GalleryPage() {
             </figcaption>
           </figure>
         </div>
+        <ContentSections sections={page.sections} />
       </div>
     </main>
   );

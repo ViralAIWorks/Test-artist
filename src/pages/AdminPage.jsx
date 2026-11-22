@@ -46,6 +46,7 @@ function AdminPage() {
   const [activePage, setActivePage] = useState("home");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(null);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -87,6 +88,63 @@ function AdminPage() {
     setContent((current) => ({ ...current, ...update }));
     setMessage("");
   };
+
+  const pageContent = content
+    ? activePage === "home" ? content.home : content.pages[activePage]
+    : {};
+  const sections = pageContent.sections ?? [];
+
+  function updateSections(pageId, update) {
+    setContent((current) => {
+      const currentPage = pageId === "home" ? current.home : current.pages[pageId];
+      const updatedPage = { ...currentPage, sections: update(currentPage.sections ?? []) };
+      return pageId === "home"
+        ? { ...current, home: updatedPage }
+        : { ...current, pages: { ...current.pages, [pageId]: updatedPage } };
+    });
+    setMessage("");
+  }
+
+  async function uploadImage(file, pageId, sectionIndex) {
+    if (!file) return;
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+    if (!allowedTypes.includes(file.type) || file.size > 3 * 1024 * 1024) {
+      setError("Chọn ảnh JPEG, PNG, WebP hoặc GIF có dung lượng dưới 3 MB.");
+      return;
+    }
+
+    setError("");
+    setMessage("");
+    setUploadingImage(`${pageId}-${sectionIndex}`);
+    try {
+      const dataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          if (typeof reader.result === "string") resolve(reader.result);
+          else reject(new Error("Không thể đọc tệp ảnh."));
+        };
+        reader.onerror = () => reject(new Error("Không thể đọc tệp ảnh."));
+        reader.readAsDataURL(file);
+      });
+      const response = await fetch("/api/content", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: { type: file.type, data: dataUrl.split(",")[1] } }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error ?? "Không thể tải ảnh lên.");
+      updateSections(pageId, (currentSections) =>
+        currentSections.map((section, index) =>
+          index === sectionIndex ? { ...section, image: result.url } : section,
+        ),
+      );
+      setMessage("Ảnh đã được lưu vào GitHub. Hãy lưu nội dung để xuất bản.");
+    } catch (uploadError) {
+      setError(uploadError.message);
+    } finally {
+      setUploadingImage(null);
+    }
+  }
 
   const selectedLabel = useMemo(
     () => pageItems.find(([id]) => id === activePage)?.[1] ?? "Trang chủ",
@@ -211,7 +269,7 @@ function AdminPage() {
               <h1>{selectedLabel}</h1>
               <p>Chỉnh sửa nội dung và thông tin hiển thị trên website.</p>
             </div>
-            <button className="admin-primary-button" onClick={saveContent} disabled={saving}>
+            <button className="admin-primary-button" onClick={saveContent} disabled={saving || uploadingImage !== null}>
               <span>{saving ? "◌" : "↑"}</span>
               {saving ? "Đang xuất bản…" : "Lưu và xuất bản"}
             </button>
@@ -301,9 +359,87 @@ function AdminPage() {
                   ))}
                 </div>
               )}
+              <div className="admin-divider" />
+              <div className="admin-card-heading admin-stats-heading">
+                <div><h2>Nội dung bổ sung</h2><p>Thêm các khối nội dung và ảnh vào cuối trang này.</p></div>
+                <button
+                  type="button"
+                  className="admin-add-button"
+                  onClick={() => updateSections(activePage, (currentSections) => [
+                    ...currentSections,
+                    { title: "", text: "", image: "", imageAlt: "" },
+                  ])}
+                >＋ Thêm mục</button>
+              </div>
+              <div className="admin-content-sections">
+                {sections.map((section, index) => (
+                  <div className="admin-content-section" key={`${activePage}-section-${index}`}>
+                    <div className="admin-content-section-heading">
+                      <strong>Mục {index + 1}</strong>
+                      <button
+                        type="button"
+                        className="admin-remove-button"
+                        aria-label={`Xóa mục ${index + 1}`}
+                        disabled={uploadingImage !== null || saving}
+                        onClick={() => updateSections(activePage, (currentSections) =>
+                          currentSections.filter((_, itemIndex) => itemIndex !== index),
+                        )}
+                      >×</button>
+                    </div>
+                    <div className="admin-field-grid">
+                      <Field
+                        label="Tiêu đề mục"
+                        value={section.title}
+                        onChange={(title) => updateSections(activePage, (currentSections) =>
+                          currentSections.map((item, itemIndex) => itemIndex === index ? { ...item, title } : item),
+                        )}
+                      />
+                      <Field
+                        label="Nội dung"
+                        value={section.text}
+                        multiline
+                        onChange={(text) => updateSections(activePage, (currentSections) =>
+                          currentSections.map((item, itemIndex) => itemIndex === index ? { ...item, text } : item),
+                        )}
+                      />
+                      <Field
+                        label="Link ảnh (không bắt buộc)"
+                        value={section.image}
+                        onChange={(image) => updateSections(activePage, (currentSections) =>
+                          currentSections.map((item, itemIndex) => itemIndex === index ? { ...item, image } : item),
+                        )}
+                        hint="Dán URL ảnh công khai hoặc tải ảnh lên bên dưới."
+                      />
+                      <Field
+                        label="Mô tả ảnh (alt)"
+                        value={section.imageAlt}
+                        onChange={(imageAlt) => updateSections(activePage, (currentSections) =>
+                          currentSections.map((item, itemIndex) => itemIndex === index ? { ...item, imageAlt } : item),
+                        )}
+                      />
+                    </div>
+                    <label className="admin-upload-control">
+                      <span>{uploadingImage === `${activePage}-${index}` ? "Đang tải ảnh lên…" : "Hoặc chọn ảnh từ thiết bị"}</span>
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,image/gif"
+                        disabled={uploadingImage !== null}
+                        onChange={(event) => {
+                          uploadImage(event.target.files?.[0], activePage, index);
+                          event.target.value = "";
+                        }}
+                      />
+                      <small>JPEG, PNG, WebP hoặc GIF · tối đa 3 MB. Ảnh được lưu vào repo GitHub.</small>
+                    </label>
+                  </div>
+                ))}
+                {sections.length === 0 && (
+                  <p className="admin-empty-sections">Chưa có mục bổ sung. Nhấn “Thêm mục” để bắt đầu.</p>
+                )}
+              </div>
               <div className="admin-form-footer">
                 <span>✦ &nbsp;Lưu thay đổi sẽ tạo commit trên GitHub.</span>
-                <button className="admin-primary-button" type="submit" disabled={saving}>
+                <button className="admin-primary-button" type="submit" disabled={saving || uploadingImage !== null}>
                   {saving ? "Đang lưu…" : "Lưu thay đổi"}
                 </button>
               </div>
@@ -334,6 +470,17 @@ function AdminPage() {
                   <p>{content.pages[activePage].description}</p>
                   <span className="admin-preview-rule" />
                   <small>NỘI DUNG TRANG</small>
+                </div>
+              )}
+              {sections.length > 0 && (
+                <div className="admin-preview-sections">
+                  {sections.map((section, index) => (
+                    <article key={`preview-${activePage}-${index}`}>
+                      {section.image && <img src={section.image} alt="" />}
+                      {section.title && <h3>{section.title}</h3>}
+                      {section.text && <p>{section.text}</p>}
+                    </article>
+                  ))}
                 </div>
               )}
               <div className="admin-preview-footnote">Bản xem trước mô phỏng nội dung chính.</div>

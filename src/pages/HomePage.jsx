@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Credit } from "../components/SiteLayout.jsx";
+import { ContentSections, Credit } from "../components/SiteLayout.jsx";
 import content from "../data/content.json";
 
 function HomePage() {
@@ -361,6 +361,10 @@ function HomePage() {
       <div className="wrap quote">
         <blockquote>“Sân khấu là nơi Karina kết nối những mảnh ghép mạnh mẽ nhất của mình.”</blockquote>
         <cite>Âm nhạc · Chuyển động · Cá tính</cite>
+      </div>
+
+      <div className="wrap">
+        <ContentSections sections={home.sections} />
       </div>
 
       <section className="wrap" id="links">

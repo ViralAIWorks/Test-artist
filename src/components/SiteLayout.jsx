@@ -77,3 +77,25 @@ export function SubpageHero({ eyebrow, title, description }) {
 export function Credit({ children, className = "" }) {
   return <p className={`credit ${className}`.trim()}>{children}</p>;
 }
+
+export function ContentSections({ sections = [] }) {
+  if (!sections.length) return null;
+  return (
+    <div className="editable-content-sections">
+      {sections.map((section, index) => (
+        <article
+          className={`editable-content-section${section.image ? " has-image" : ""}`}
+          key={`${section.title}-${index}`}
+        >
+          {section.image && (
+            <img src={section.image} alt={section.imageAlt ?? ""} loading="lazy" />
+          )}
+          <div>
+            {section.title && <h2>{section.title}</h2>}
+            {section.text && <p>{section.text}</p>}
+          </div>
+        </article>
+      ))}
+    </div>
+  );
+}

@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { getSession, isSameOrigin } from "../server/auth.js";
 
 const contentPath = "src/data/content.json";
@@ -48,6 +49,7 @@ function validContent(content) {
   if (!content.home || !content.pages || !Array.isArray(content.stats)) return false;
   const isSafeUrl = (value) => {
     if (!value) return true;
+    if (/^\/uploads\/[a-zA-Z0-9._-]+$/.test(value)) return true;
     try {
       return ["http:", "https:"].includes(new URL(value).protocol);
     } catch {
@@ -68,6 +70,20 @@ function validContent(content) {
     "imageLicense",
   ];
   const pageKeys = ["profile", "music", "achievements", "interests", "gallery"];
+  const validSections = (sections) =>
+    sections === undefined ||
+    (Array.isArray(sections) &&
+      sections.length <= 30 &&
+      sections.every(
+        (section) =>
+          section &&
+          ["title", "text", "image", "imageAlt"].every(
+            (field) =>
+              typeof section[field] === "string" &&
+              section[field].length <= (field === "text" ? 5000 : 1000),
+          ) &&
+          isSafeUrl(section.image),
+      ));
   return (
     homeFields.every(
       (key) =>
@@ -76,6 +92,7 @@ function validContent(content) {
     ) &&
     isSafeUrl(content.home.image) &&
     isSafeUrl(content.home.imageCreditUrl) &&
+    validSections(content.home.sections) &&
     pageKeys.every(
       (key) =>
         content.pages[key] &&
@@ -83,7 +100,8 @@ function validContent(content) {
           (field) =>
             typeof content.pages[key][field] === "string" &&
             content.pages[key][field].length <= 10000,
-        ),
+        ) &&
+        validSections(content.pages[key].sections),
     ) &&
     content.stats.length <= 8 &&
     content.stats.every(
@@ -97,14 +115,63 @@ function validContent(content) {
   );
 }
 
+const uploadTypes = {
+  "image/jpeg": { extension: "jpg", signature: (bytes) => bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff },
+  "image/png": { extension: "png", signature: (bytes) => bytes.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])) },
+  "image/webp": { extension: "webp", signature: (bytes) => bytes.toString("ascii", 0, 4) === "RIFF" && bytes.toString("ascii", 8, 12) === "WEBP" },
+  "image/gif": { extension: "gif", signature: (bytes) => ["GIF87a", "GIF89a"].includes(bytes.toString("ascii", 0, 6)) },
+};
+
+async function uploadImage(req, res) {
+  if (!isSameOrigin(req)) {
+    return res.status(403).json({ error: "Forbidden" });
+  }
+  const { type, data } = req.body?.image ?? {};
+  const imageType = uploadTypes[type];
+  if (typeof data !== "string" || !imageType || !/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(data)) {
+    return res.status(400).json({ error: "Invalid image file" });
+  }
+  const bytes = Buffer.from(data, "base64");
+  if (bytes.length === 0 || bytes.length > 3 * 1024 * 1024 || !imageType.signature(bytes)) {
+    return res.status(400).json({ error: "Image must be a valid JPEG, PNG, WebP, or GIF under 3 MB" });
+  }
+
+  try {
+    const { owner, repo, branch } = repositoryConfig();
+    const filename = `${randomUUID()}.${imageType.extension}`;
+    const path = `public/uploads/${filename}`;
+    const response = await githubRequest(
+      `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: "Add image from content dashboard",
+          content: bytes.toString("base64"),
+          branch,
+        }),
+      },
+    );
+    if (!response.ok) {
+      console.error("GitHub image upload failed:", response.status);
+      return res.status(502).json({ error: "GitHub could not save the image" });
+    }
+    return res.status(201).json({ url: `/uploads/${filename}` });
+  } catch (error) {
+    console.error("Could not upload dashboard image:", error);
+    return res.status(502).json({ error: "Could not upload image to GitHub" });
+  }
+}
+
 export default async function handler(req, res) {
-  if (!["GET", "PUT"].includes(req.method)) {
-    res.setHeader("Allow", "GET, PUT");
+  if (!["GET", "PUT", "POST"].includes(req.method)) {
+    res.setHeader("Allow", "GET, PUT, POST");
     return res.status(405).json({ error: "Method not allowed" });
   }
   if (!getSession(req)) {
     return res.status(401).json({ error: "Sign in to manage website content" });
   }
+  if (req.method === "POST") return uploadImage(req, res);
   if (req.method === "GET") {
     try {
       const { content, sha } = await readContent();

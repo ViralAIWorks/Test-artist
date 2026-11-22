@@ -1,5 +1,5 @@
 import React from "react";
-import { Credit, SubpageHero, SubpageNav } from "../components/SiteLayout.jsx";
+import { ContentSections, Credit, SubpageHero, SubpageNav } from "../components/SiteLayout.jsx";
 import content from "../data/content.json";
 
 function InterestsPage() {
@@ -85,6 +85,7 @@ function InterestsPage() {
             trong các nội dung đời thường.
           </p>
         </div>
+        <ContentSections sections={page.sections} />
       </div>
     </main>
   );

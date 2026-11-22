@@ -34,8 +34,10 @@ required.
 4. Open `https://<your-production-domain>/admin`, sign in with the allowed GitHub
    account, edit the homepage or page introductions, and choose **Lưu và xuất bản**.
 
-The dashboard only edits the structured copy in `src/data/content.json` (homepage hero,
-quick facts, and each subpage's introduction). Other detailed page sections remain in
-their React page components and still require a code change. Image files should be
-hosted at public URLs; the dashboard stores their URLs and attribution, not uploaded
-image binaries.
+The dashboard edits the homepage hero and quick facts, each page's introduction, and
+additional content sections on every page. Each added section can include a heading,
+text, and an optional image URL. To upload an image from the dashboard, choose a JPEG,
+PNG, WebP, or GIF smaller than 3 MB; it is committed under `public/uploads/` and served
+by Vercel after deployment. Uploaded images and content changes are saved in separate
+GitHub commits, so allow both deployments to finish before expecting the new section
+and image to appear on the live site.

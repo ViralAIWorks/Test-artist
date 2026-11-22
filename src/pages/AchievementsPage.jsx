@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Credit, SubpageHero, SubpageNav } from "../components/SiteLayout.jsx";
+import { ContentSections, Credit, SubpageHero, SubpageNav } from "../components/SiteLayout.jsx";
 import content from "../data/content.json";
 
 function AchievementsPage() {
@@ -89,6 +89,7 @@ function AchievementsPage() {
             Khám phá âm nhạc&nbsp; ↗
           </Link>
         </div>
+        <ContentSections sections={page.sections} />
       </div>
     </main>
   );

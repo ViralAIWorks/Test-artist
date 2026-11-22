@@ -978,6 +978,46 @@ a:focus-visible {
   background: rgba(182, 167, 255, 0.1);
 }
 
+.editable-content-sections {
+  display: grid;
+  gap: 18px;
+  margin: 28px 0;
+}
+
+.editable-content-section {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 25px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+}
+
+.editable-content-section:not(.has-image) {
+  grid-template-columns: 1fr;
+}
+
+.editable-content-section img {
+  width: 100%;
+  max-height: 420px;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+
+.editable-content-section h2 {
+  margin: 0 0 10px;
+  font: 500 clamp(22px, 3vw, 34px) / 1.15 var(--serif);
+}
+
+.editable-content-section p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.8;
+  white-space: pre-line;
+}
+
 @media (max-width: 760px) {
   .subpage {
     min-height: calc(100vh - 130px);
@@ -998,6 +1038,12 @@ a:focus-visible {
 
   .subpage-links {
     padding-bottom: 30px;
+  }
+
+  .editable-content-section {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    padding: 14px;
   }
 }
 
