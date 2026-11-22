@@ -11,13 +11,33 @@
     "imageCredit": "10Asia / Wikimedia Commons",
     "imageCreditUrl": "https://commons.wikimedia.org/wiki/File:Aespa_Karina_2024_MMA_2.jpg",
     "imageLicense": "CC BY 3.0",
-    "sections": []
+    "sections": [
+      {
+        "type": "image",
+        "title": "aespa - logo",
+        "text": "",
+        "image": "https://i.pinimg.com/736x/f4/5e/be/f45ebe93409e5908befc7c466065046c.jpg",
+        "imageAlt": ""
+      }
+    ]
   },
   "stats": [
-    { "value": "2000", "label": "Năm sinh" },
-    { "value": "2020", "label": "Ra mắt cùng aespa" },
-    { "value": "Leader", "label": "Vai trò trong nhóm" },
-    { "value": "Rapper · Vocal", "label": "Trình diễn" }
+    {
+      "value": "2000",
+      "label": "Năm sinh"
+    },
+    {
+      "value": "2020",
+      "label": "Ra mắt cùng aespa"
+    },
+    {
+      "value": "Leader",
+      "label": "Vai trò trong nhóm"
+    },
+    {
+      "value": "Rapper · Vocal",
+      "label": "Trình diễn"
+    }
   ],
   "pages": {
     "profile": {
