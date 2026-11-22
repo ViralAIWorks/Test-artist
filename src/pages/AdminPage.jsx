@@ -328,7 +328,7 @@ function AdminPage() {
         <a className="admin-wordmark" href="/">DASHBOARD<span>.</span></a>
         <div className="admin-workspace">
           <div className="admin-avatar">K</div>
-          <div><strong>Karina in focus</strong><small>Quản lý nội dung</small></div>
+          <div><strong>Admin</strong><small>Quản lý nội dung</small></div>
           <span className="admin-workspace-chevron">⌄</span>
         </div>
         <div className="admin-nav-label">NỘI DUNG WEBSITE</div>
