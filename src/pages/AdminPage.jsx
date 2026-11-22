@@ -9,6 +9,13 @@ const pageItems = [
   ["gallery", "Thư viện", "Giới thiệu thư viện ảnh"],
 ];
 
+const sectionTypes = [
+  ["text", "Văn bản"],
+  ["image", "Hình ảnh"],
+  ["stacked", "Ảnh + văn bản (xếp dọc)"],
+  ["split", "Ảnh + văn bản (chia 2 cột)"],
+];
+
 const homeFields = [
   ["eyebrow", "Dòng giới thiệu nhỏ"],
   ["title", "Tên nghệ sĩ"],
@@ -367,7 +374,7 @@ function AdminPage() {
                   className="admin-add-button"
                   onClick={() => updateSections(activePage, (currentSections) => [
                     ...currentSections,
-                    { title: "", text: "", image: "", imageAlt: "" },
+                    { type: "text", title: "", text: "", image: "", imageAlt: "" },
                   ])}
                 >＋ Thêm mục</button>
               </div>
@@ -387,50 +394,74 @@ function AdminPage() {
                       >×</button>
                     </div>
                     <div className="admin-field-grid">
+                      <label className="admin-field">
+                        <span>Kiểu nội dung</span>
+                        <select
+                          value={section.type ?? "split"}
+                          onChange={(event) => {
+                            const type = event.target.value;
+                            updateSections(activePage, (currentSections) =>
+                              currentSections.map((item, itemIndex) => itemIndex === index ? { ...item, type } : item),
+                            );
+                          }}
+                        >
+                          {sectionTypes.map(([type, label]) => (
+                            <option key={type} value={type}>{label}</option>
+                          ))}
+                        </select>
+                      </label>
                       <Field
-                        label="Tiêu đề mục"
+                        label={section.type === "image" ? "Chú thích ảnh (không bắt buộc)" : "Tiêu đề mục"}
                         value={section.title}
                         onChange={(title) => updateSections(activePage, (currentSections) =>
                           currentSections.map((item, itemIndex) => itemIndex === index ? { ...item, title } : item),
                         )}
                       />
-                      <Field
-                        label="Nội dung"
-                        value={section.text}
-                        multiline
-                        onChange={(text) => updateSections(activePage, (currentSections) =>
-                          currentSections.map((item, itemIndex) => itemIndex === index ? { ...item, text } : item),
-                        )}
-                      />
-                      <Field
-                        label="Link ảnh (không bắt buộc)"
-                        value={section.image}
-                        onChange={(image) => updateSections(activePage, (currentSections) =>
-                          currentSections.map((item, itemIndex) => itemIndex === index ? { ...item, image } : item),
-                        )}
-                        hint="Dán URL ảnh công khai hoặc tải ảnh lên bên dưới."
-                      />
-                      <Field
-                        label="Mô tả ảnh (alt)"
-                        value={section.imageAlt}
-                        onChange={(imageAlt) => updateSections(activePage, (currentSections) =>
-                          currentSections.map((item, itemIndex) => itemIndex === index ? { ...item, imageAlt } : item),
-                        )}
-                      />
+                      {section.type !== "image" && (
+                        <Field
+                          label="Nội dung"
+                          value={section.text}
+                          multiline
+                          onChange={(text) => updateSections(activePage, (currentSections) =>
+                            currentSections.map((item, itemIndex) => itemIndex === index ? { ...item, text } : item),
+                          )}
+                        />
+                      )}
+                      {section.type !== "text" && (
+                        <>
+                          <Field
+                            label="Link ảnh"
+                            value={section.image}
+                            onChange={(image) => updateSections(activePage, (currentSections) =>
+                              currentSections.map((item, itemIndex) => itemIndex === index ? { ...item, image } : item),
+                            )}
+                            hint="Dán URL ảnh công khai hoặc tải ảnh lên bên dưới."
+                          />
+                          <Field
+                            label="Mô tả ảnh (alt)"
+                            value={section.imageAlt}
+                            onChange={(imageAlt) => updateSections(activePage, (currentSections) =>
+                              currentSections.map((item, itemIndex) => itemIndex === index ? { ...item, imageAlt } : item),
+                            )}
+                          />
+                        </>
+                      )}
                     </div>
-                    <label className="admin-upload-control">
-                      <span>{uploadingImage === `${activePage}-${index}` ? "Đang tải ảnh lên…" : "Hoặc chọn ảnh từ thiết bị"}</span>
-                      <input
-                        type="file"
-                        accept="image/jpeg,image/png,image/webp,image/gif"
-                        disabled={uploadingImage !== null}
-                        onChange={(event) => {
-                          uploadImage(event.target.files?.[0], activePage, index);
-                          event.target.value = "";
-                        }}
-                      />
-                      <small>JPEG, PNG, WebP hoặc GIF · tối đa 3 MB. Ảnh được lưu vào repo GitHub.</small>
-                    </label>
+                    {section.type !== "text" && (
+                      <label className="admin-upload-control">
+                        <span>{uploadingImage === `${activePage}-${index}` ? "Đang tải ảnh lên…" : "Hoặc chọn ảnh từ thiết bị"}</span>
+                        <input
+                          type="file"
+                          accept="image/jpeg,image/png,image/webp,image/gif"
+                          disabled={uploadingImage !== null}
+                          onChange={(event) => {
+                            uploadImage(event.target.files?.[0], activePage, index);
+                            event.target.value = "";
+                          }}
+                        />
+                        <small>JPEG, PNG, WebP hoặc GIF · tối đa 3 MB. Ảnh được lưu vào repo GitHub.</small>
+                      </label>
+                    )}
                   </div>
                 ))}
                 {sections.length === 0 && (
@@ -474,13 +505,25 @@ function AdminPage() {
               )}
               {sections.length > 0 && (
                 <div className="admin-preview-sections">
-                  {sections.map((section, index) => (
-                    <article key={`preview-${activePage}-${index}`}>
-                      {section.image && <img src={section.image} alt="" />}
-                      {section.title && <h3>{section.title}</h3>}
-                      {section.text && <p>{section.text}</p>}
-                    </article>
-                  ))}
+                  {sections.map((section, index) => {
+                    const type = section.type ?? "split";
+                    return (
+                      <article className={`admin-preview-section-${type}`} key={`preview-${activePage}-${index}`}>
+                        {type !== "text" && section.image && <img src={section.image} alt="" />}
+                        {type === "split" || type === "stacked" ? (
+                          <div>
+                            {section.title && <h3>{section.title}</h3>}
+                            {section.text && <p>{section.text}</p>}
+                          </div>
+                        ) : (
+                          <>
+                            {section.title && <h3>{section.title}</h3>}
+                            {type !== "image" && section.text && <p>{section.text}</p>}
+                          </>
+                        )}
+                      </article>
+                    );
+                  })}
                 </div>
               )}
               <div className="admin-preview-footnote">Bản xem trước mô phỏng nội dung chính.</div>

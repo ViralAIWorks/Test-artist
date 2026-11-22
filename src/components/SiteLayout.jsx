@@ -82,20 +82,28 @@ export function ContentSections({ sections = [] }) {
   if (!sections.length) return null;
   return (
     <div className="editable-content-sections">
-      {sections.map((section, index) => (
-        <article
-          className={`editable-content-section${section.image ? " has-image" : ""}`}
-          key={`${section.title}-${index}`}
-        >
-          {section.image && (
-            <img src={section.image} alt={section.imageAlt ?? ""} loading="lazy" />
-          )}
-          <div>
-            {section.title && <h2>{section.title}</h2>}
-            {section.text && <p>{section.text}</p>}
-          </div>
-        </article>
-      ))}
+      {sections.map((section, index) => {
+        const type = section.type ?? "split";
+        const image = type !== "text" && section.image;
+        const copy = type !== "image";
+        return (
+          <article
+            className={`editable-content-section layout-${type}${image ? " has-image" : ""}`}
+            key={`${section.title}-${index}`}
+          >
+            {image && (
+              <img src={section.image} alt={section.imageAlt ?? ""} loading="lazy" />
+            )}
+            {copy && (
+              <div>
+                {section.title && <h2>{section.title}</h2>}
+                {section.text && <p>{section.text}</p>}
+              </div>
+            )}
+            {type === "image" && section.title && <h2>{section.title}</h2>}
+          </article>
+        );
+      })}
     </div>
   );
 }

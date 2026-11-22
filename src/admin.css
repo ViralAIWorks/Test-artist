@@ -457,7 +457,8 @@
 }
 
 .admin-field input,
-.admin-field textarea {
+.admin-field textarea,
+.admin-field select {
   width: 100%;
   min-height: 38px;
   padding: 10px 11px;
@@ -469,13 +470,23 @@
   font: 11px / 1.6 var(--sans);
 }
 
+.admin-field select {
+  cursor: pointer;
+}
+
+.admin-field select option {
+  background: #111327;
+  color: #eeedfa;
+}
+
 .admin-field textarea {
   min-height: 92px;
   resize: vertical;
 }
 
 .admin-field input:focus,
-.admin-field textarea:focus {
+.admin-field textarea:focus,
+.admin-field select:focus {
   border-color: rgba(182, 167, 255, 0.72);
   box-shadow: 0 0 0 2px rgba(182, 167, 255, 0.08);
 }
@@ -946,6 +957,22 @@
   padding: 10px;
   border: 1px solid rgba(201, 194, 255, 0.12);
   background: rgba(7, 9, 22, 0.38);
+}
+
+.admin-preview-sections .admin-preview-section-split {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-preview-sections .admin-preview-section-stacked {
+  display: grid;
+  gap: 8px;
+}
+
+.admin-preview-sections .admin-preview-section-image {
+  padding: 8px;
 }
 
 .admin-preview-sections img {
