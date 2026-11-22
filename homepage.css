@@ -553,6 +553,10 @@ section {
   overflow: hidden;
 }
 
+.feature-text-only {
+  grid-template-columns: 1fr;
+}
+
 .feature-photo {
   min-height: 350px;
   position: relative;

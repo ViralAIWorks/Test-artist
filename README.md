@@ -35,9 +35,11 @@ required.
    account, edit the homepage or page introductions, and choose **Lưu và xuất bản**.
 
 The dashboard edits the homepage hero and quick facts, each page's introduction, and
-additional content sections on every page. Added sections can be set to text, image,
-image with text stacked vertically, or a two-column image-and-text layout. To upload an
-image from the dashboard, choose a JPEG, PNG, WebP, or GIF smaller than 3 MB; it is
-committed under `public/uploads/` and served by Vercel after deployment. Uploaded images
-and content changes are saved in separate GitHub commits, so allow both deployments to
-finish before expecting the new section and image to appear on the live site.
+the content blocks on every other page. These blocks include featured images and copy,
+cards, timelines, personal facts, galleries, quotes, and text; their entries can be
+added or removed. Additional sections can also be set to text, image, image with text
+stacked vertically, or a two-column image-and-text layout. To upload an image from the
+dashboard, choose a JPEG, PNG, WebP, or GIF smaller than 3 MB; it is committed under
+`public/uploads/` and served by Vercel after deployment. Uploaded images and content
+changes are saved in separate GitHub commits, so allow both deployments to finish before
+expecting the new section and image to appear on the live site.

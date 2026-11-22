@@ -508,6 +508,27 @@
   margin-bottom: 15px;
 }
 
+.admin-block-add {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-block-add select {
+  min-height: 31px;
+  max-width: 190px;
+  padding: 6px 8px;
+  border: 1px solid rgba(182, 167, 255, 0.3);
+  background: #111327;
+  color: #d3ccff;
+  font: 10px var(--sans);
+}
+
+.admin-block-add select:focus {
+  border-color: rgba(182, 167, 255, 0.72);
+  outline: 0;
+}
+
 .admin-add-button {
   padding: 7px 9px;
   border: 1px solid rgba(182, 167, 255, 0.35);
@@ -846,6 +867,11 @@
     font-size: 30px;
   }
 
+  .admin-block-add {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
   .admin-editor-card {
     padding: 17px 14px;
   }
@@ -904,6 +930,28 @@
 
 .admin-content-section-heading .admin-remove-button {
   height: 30px;
+}
+
+.admin-block-items-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+  color: #c7bdff;
+  font-size: 10px;
+}
+
+.admin-block-items {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-block-item {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid rgba(201, 194, 255, 0.1);
+  background: rgba(7, 9, 22, 0.24);
 }
 
 .admin-upload-control {
@@ -973,6 +1021,50 @@
 
 .admin-preview-sections .admin-preview-section-image {
   padding: 8px;
+}
+
+.admin-preview-sections .admin-preview-block-gallery {
+  padding: 8px;
+}
+
+.admin-preview-block-gallery .admin-preview-gallery {
+  display: grid;
+  gap: 7px;
+}
+
+.admin-preview-gallery img {
+  margin-bottom: 4px;
+}
+
+.admin-preview-sections .admin-preview-block-facts,
+.admin-preview-sections .admin-preview-block-text,
+.admin-preview-sections .admin-preview-block-quote {
+  padding: 10px;
+}
+
+.admin-preview-sections .admin-preview-block-item {
+  display: grid;
+  gap: 4px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(201, 194, 255, 0.1);
+}
+
+.admin-preview-sections .admin-preview-block-item strong {
+  color: #f3f1ff;
+  font: 500 11px var(--serif);
+}
+
+.admin-preview-sections .admin-preview-block-item small,
+.admin-preview-gallery small,
+.admin-preview-block-feature > small,
+.admin-preview-block-quote > small {
+  color: #b6a7ff;
+  font-size: 7px;
+}
+
+.admin-preview-block-feature > img {
+  margin-bottom: 8px;
 }
 
 .admin-preview-sections img {

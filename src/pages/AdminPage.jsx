@@ -16,6 +16,62 @@ const sectionTypes = [
   ["split", "Ảnh + văn bản (chia 2 cột)"],
 ];
 
+const blockTypes = [
+  ["feature", "Ảnh nổi bật + nội dung"],
+  ["cards", "Danh sách thẻ"],
+  ["timeline", "Dòng thời gian"],
+  ["gallery", "Bộ sưu tập ảnh"],
+  ["facts", "Thông tin cá nhân"],
+  ["text", "Khối văn bản"],
+  ["quote", "Trích dẫn"],
+];
+
+const blockItemFields = {
+  cards: [
+    ["eyebrow", "Nhãn nhỏ"],
+    ["title", "Tiêu đề"],
+    ["text", "Nội dung", true],
+    ["icon", "Biểu tượng"],
+  ],
+  timeline: [
+    ["date", "Thời gian"],
+    ["title", "Tiêu đề"],
+    ["text", "Nội dung", true],
+  ],
+  gallery: [
+    ["image", "Link ảnh"],
+    ["imageAlt", "Mô tả ảnh (alt)"],
+    ["caption", "Chú thích"],
+    ["credit", "Nguồn ảnh"],
+    ["creditUrl", "Liên kết nguồn"],
+  ],
+  facts: [
+    ["label", "Nhãn"],
+    ["value", "Giá trị"],
+  ],
+};
+
+function emptyBlock(type) {
+  if (type === "feature") {
+    return { type, eyebrow: "", title: "", text: "", image: "", imageAlt: "", credit: "", creditUrl: "", linkLabel: "", linkUrl: "" };
+  }
+  if (type === "cards") {
+    return { type, eyebrow: "", title: "", description: "", variant: "cards", items: [] };
+  }
+  if (type === "timeline" || type === "gallery" || type === "facts") {
+    return { type, eyebrow: "", title: "", description: "", items: [] };
+  }
+  if (type === "quote") return { type, text: "", cite: "" };
+  return { type: "text", eyebrow: "", title: "", text: "" };
+}
+
+function emptyBlockItem(type) {
+  if (type === "timeline") return { date: "", title: "", text: "" };
+  if (type === "gallery") return { image: "", imageAlt: "", caption: "", credit: "", creditUrl: "" };
+  if (type === "facts") return { label: "", value: "" };
+  return { eyebrow: "", title: "", text: "", icon: "" };
+}
+
 const homeFields = [
   ["eyebrow", "Dòng giới thiệu nhỏ"],
   ["title", "Tên nghệ sĩ"],
@@ -51,6 +107,7 @@ function AdminPage() {
   const [content, setContent] = useState(null);
   const [sha, setSha] = useState(null);
   const [activePage, setActivePage] = useState("home");
+  const [newBlockType, setNewBlockType] = useState("feature");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(null);
@@ -100,6 +157,7 @@ function AdminPage() {
     ? activePage === "home" ? content.home : content.pages[activePage]
     : {};
   const sections = pageContent.sections ?? [];
+  const blocks = pageContent.blocks ?? [];
 
   function updateSections(pageId, update) {
     setContent((current) => {
@@ -112,7 +170,18 @@ function AdminPage() {
     setMessage("");
   }
 
-  async function uploadImage(file, pageId, sectionIndex) {
+  function updateBlocks(pageId, update) {
+    setContent((current) => ({
+      ...current,
+      pages: {
+        ...current.pages,
+        [pageId]: { ...current.pages[pageId], blocks: update(current.pages[pageId].blocks ?? []) },
+      },
+    }));
+    setMessage("");
+  }
+
+  async function uploadImage(file, pageId, sectionIndex, blockIndex = null, itemIndex = null) {
     if (!file) return;
     const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
     if (!allowedTypes.includes(file.type) || file.size > 3 * 1024 * 1024) {
@@ -122,7 +191,10 @@ function AdminPage() {
 
     setError("");
     setMessage("");
-    setUploadingImage(`${pageId}-${sectionIndex}`);
+    const uploadKey = blockIndex === null
+      ? `${pageId}-${sectionIndex}`
+      : `${pageId}-block-${blockIndex}-${itemIndex ?? "main"}`;
+    setUploadingImage(uploadKey);
     try {
       const dataUrl = await new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -140,11 +212,26 @@ function AdminPage() {
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error ?? "Không thể tải ảnh lên.");
-      updateSections(pageId, (currentSections) =>
-        currentSections.map((section, index) =>
-          index === sectionIndex ? { ...section, image: result.url } : section,
-        ),
-      );
+      if (blockIndex === null) {
+        updateSections(pageId, (currentSections) =>
+          currentSections.map((section, index) =>
+            index === sectionIndex ? { ...section, image: result.url } : section,
+          ),
+        );
+      } else {
+        updateBlocks(pageId, (currentBlocks) =>
+          currentBlocks.map((block, index) => {
+            if (index !== blockIndex) return block;
+            if (itemIndex === null) return { ...block, image: result.url };
+            return {
+              ...block,
+              items: block.items.map((item, currentIndex) =>
+                currentIndex === itemIndex ? { ...item, image: result.url } : item,
+              ),
+            };
+          }),
+        );
+      }
       setMessage("Ảnh đã được lưu vào GitHub. Hãy lưu nội dung để xuất bản.");
     } catch (uploadError) {
       setError(uploadError.message);
@@ -202,7 +289,7 @@ function AdminPage() {
     return (
       <main className="admin-login">
         <div className="admin-login-card">
-          <a className="admin-wordmark" href="/">KARINA<span>.</span></a>
+          <a className="admin-wordmark" href="/">DASHBOARD<span>.</span></a>
           <div className="admin-kicker">KHU VỰC QUẢN TRỊ</div>
           <h1>Chỉnh sửa nội dung<br /><em>theo cách của bạn.</em></h1>
           <p>Đăng nhập bằng GitHub để quản lý nội dung website. Mỗi lần xuất bản sẽ tạo một commit và Vercel tự cập nhật website.</p>
@@ -238,7 +325,7 @@ function AdminPage() {
   return (
     <main className="admin-shell">
       <aside className="admin-sidebar">
-        <a className="admin-wordmark" href="/">KARINA<span>.</span></a>
+        <a className="admin-wordmark" href="/">DASHBOARD<span>.</span></a>
         <div className="admin-workspace">
           <div className="admin-avatar">K</div>
           <div><strong>Karina in focus</strong><small>Quản lý nội dung</small></div>
@@ -273,7 +360,7 @@ function AdminPage() {
           <div className="admin-heading-row">
             <div>
               <div className="admin-kicker">KHÔNG GIAN NỘI DUNG</div>
-              <h1>{selectedLabel}</h1>
+              <h1>Dashboard · {selectedLabel}</h1>
               <p>Chỉnh sửa nội dung và thông tin hiển thị trên website.</p>
             </div>
             <button className="admin-primary-button" onClick={saveContent} disabled={saving || uploadingImage !== null}>
@@ -365,6 +452,175 @@ function AdminPage() {
                     />
                   ))}
                 </div>
+              )}
+              {activePage !== "home" && (
+                <>
+                  <div className="admin-divider" />
+                  <div className="admin-card-heading admin-stats-heading">
+                    <div><h2>Nội dung trên trang</h2><p>Chỉnh sửa ảnh, thẻ, mốc thời gian và các khối nội dung đang hiển thị.</p></div>
+                    <div className="admin-block-add">
+                      <select
+                        aria-label="Loại nội dung mới"
+                        value={newBlockType}
+                        onChange={(event) => setNewBlockType(event.target.value)}
+                      >
+                        {blockTypes.map(([type, label]) => <option key={type} value={type}>{label}</option>)}
+                      </select>
+                      <button
+                        type="button"
+                        className="admin-add-button"
+                        onClick={() => updateBlocks(activePage, (currentBlocks) => [...currentBlocks, emptyBlock(newBlockType)])}
+                      >＋ Thêm khối</button>
+                    </div>
+                  </div>
+                  <div className="admin-content-sections">
+                    {blocks.map((block, blockIndex) => {
+                      const updateBlock = (update) => updateBlocks(activePage, (currentBlocks) =>
+                        currentBlocks.map((item, index) => index === blockIndex ? update(item) : item),
+                      );
+                      const itemFields = blockItemFields[block.type] ?? [];
+                      const headingFields = block.type === "feature"
+                        ? [
+                          ["eyebrow", "Nhãn nhỏ"], ["title", "Tiêu đề"], ["text", "Nội dung", true],
+                          ["image", "Link ảnh"], ["imageAlt", "Mô tả ảnh (alt)"], ["credit", "Nguồn ảnh"],
+                          ["creditUrl", "Liên kết nguồn ảnh"], ["linkLabel", "Nhãn liên kết"], ["linkUrl", "Đường dẫn liên kết"],
+                        ]
+                        : block.type === "cards" || block.type === "timeline" || block.type === "gallery"
+                          ? [["eyebrow", "Dòng giới thiệu nhỏ"], ["title", "Tiêu đề khối"], ["description", "Mô tả", true]]
+                          : block.type === "facts"
+                            ? [["title", "Tiêu đề khối"]]
+                            : block.type === "quote"
+                              ? [["text", "Trích dẫn", true], ["cite", "Dòng ghi chú"]]
+                              : [["eyebrow", "Dòng giới thiệu nhỏ"], ["title", "Tiêu đề"], ["text", "Nội dung", true]];
+                      return (
+                        <div className="admin-content-section" key={`${activePage}-block-${blockIndex}`}>
+                          <div className="admin-content-section-heading">
+                            <strong>{blockTypes.find(([type]) => type === block.type)?.[1] ?? "Khối nội dung"} {blockIndex + 1}</strong>
+                            <button
+                              type="button"
+                              className="admin-remove-button"
+                              aria-label={`Xóa khối nội dung ${blockIndex + 1}`}
+                              disabled={uploadingImage !== null || saving}
+                              onClick={() => updateBlocks(activePage, (currentBlocks) =>
+                                currentBlocks.filter((_, index) => index !== blockIndex),
+                              )}
+                            >×</button>
+                          </div>
+                          <div className="admin-field-grid">
+                            {headingFields.map(([key, label, multiline]) => (
+                              <Field
+                                key={key}
+                                label={label}
+                                value={block[key]}
+                                multiline={multiline}
+                                onChange={(value) => updateBlock((currentBlock) => ({ ...currentBlock, [key]: value }))}
+                              />
+                            ))}
+                            {block.type === "cards" && (
+                              <label className="admin-field">
+                                <span>Kiểu trình bày</span>
+                                <select
+                                  value={block.variant ?? "cards"}
+                                  onChange={(event) => updateBlock((currentBlock) => ({ ...currentBlock, variant: event.target.value }))}
+                                >
+                                  <option value="cards">Thẻ nội dung</option>
+                                  <option value="interests">Thẻ sở thích</option>
+                                </select>
+                              </label>
+                            )}
+                          </div>
+                          {block.type === "feature" && (
+                            <label className="admin-upload-control">
+                              <span>{uploadingImage === `${activePage}-block-${blockIndex}-main` ? "Đang tải ảnh lên…" : "Tải ảnh từ thiết bị"}</span>
+                              <input
+                                type="file"
+                                accept="image/jpeg,image/png,image/webp,image/gif"
+                                disabled={uploadingImage !== null}
+                                onChange={(event) => {
+                                  uploadImage(event.target.files?.[0], activePage, null, blockIndex);
+                                  event.target.value = "";
+                                }}
+                              />
+                              <small>JPEG, PNG, WebP hoặc GIF · tối đa 3 MB.</small>
+                            </label>
+                          )}
+                          {itemFields.length > 0 && (
+                            <>
+                              <div className="admin-block-items-heading">
+                                <strong>{block.type === "gallery" ? "Ảnh trong thư viện" : "Các mục"}</strong>
+                                <button
+                                  type="button"
+                                  className="admin-add-button"
+                                  disabled={(block.items ?? []).length >= 30}
+                                  onClick={() => updateBlock((currentBlock) => ({
+                                    ...currentBlock,
+                                    items: [...(currentBlock.items ?? []), emptyBlockItem(block.type)],
+                                  }))}
+                                >＋ Thêm mục</button>
+                              </div>
+                              <div className="admin-block-items">
+                                {(block.items ?? []).map((item, itemIndex) => (
+                                  <div className="admin-block-item" key={`${block.type}-${blockIndex}-item-${itemIndex}`}>
+                                    <div className="admin-content-section-heading">
+                                      <strong>Mục {itemIndex + 1}</strong>
+                                      <button
+                                        type="button"
+                                        className="admin-remove-button"
+                                        aria-label={`Xóa mục ${itemIndex + 1}`}
+                                        disabled={uploadingImage !== null || saving}
+                                        onClick={() => updateBlock((currentBlock) => ({
+                                          ...currentBlock,
+                                          items: currentBlock.items.filter((_, index) => index !== itemIndex),
+                                        }))}
+                                      >×</button>
+                                    </div>
+                                    <div className="admin-field-grid">
+                                      {itemFields.map(([key, label, multiline]) => (
+                                        <Field
+                                          key={key}
+                                          label={label}
+                                          value={item[key]}
+                                          multiline={multiline}
+                                          onChange={(value) => updateBlock((currentBlock) => ({
+                                            ...currentBlock,
+                                            items: currentBlock.items.map((currentItem, index) =>
+                                              index === itemIndex ? { ...currentItem, [key]: value } : currentItem,
+                                            ),
+                                          }))}
+                                        />
+                                      ))}
+                                    </div>
+                                    {block.type === "gallery" && (
+                                      <label className="admin-upload-control">
+                                        <span>{uploadingImage === `${activePage}-block-${blockIndex}-${itemIndex}` ? "Đang tải ảnh lên…" : "Tải ảnh từ thiết bị"}</span>
+                                        <input
+                                          type="file"
+                                          accept="image/jpeg,image/png,image/webp,image/gif"
+                                          disabled={uploadingImage !== null}
+                                          onChange={(event) => {
+                                            uploadImage(event.target.files?.[0], activePage, null, blockIndex, itemIndex);
+                                            event.target.value = "";
+                                          }}
+                                        />
+                                        <small>JPEG, PNG, WebP hoặc GIF · tối đa 3 MB.</small>
+                                      </label>
+                                    )}
+                                  </div>
+                                ))}
+                                {(block.items ?? []).length === 0 && (
+                                  <p className="admin-empty-sections">Chưa có mục nào trong khối này.</p>
+                                )}
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      );
+                    })}
+                    {blocks.length === 0 && (
+                      <p className="admin-empty-sections">Chưa có nội dung chính. Chọn kiểu khối rồi nhấn “Thêm khối”.</p>
+                    )}
+                  </div>
+                </>
               )}
               <div className="admin-divider" />
               <div className="admin-card-heading admin-stats-heading">
@@ -500,7 +756,60 @@ function AdminPage() {
                   <h2>{content.pages[activePage].title}</h2>
                   <p>{content.pages[activePage].description}</p>
                   <span className="admin-preview-rule" />
-                  <small>NỘI DUNG TRANG</small>
+                  <small>DASHBOARD · BẢN NHÁP</small>
+                </div>
+              )}
+              {activePage !== "home" && blocks.length > 0 && (
+                <div className="admin-preview-sections">
+                  {blocks.map((block, index) => (
+                    <article className={`admin-preview-block-${block.type}`} key={`preview-block-${index}`}>
+                      {block.type === "feature" && (
+                        <>
+                          {block.image && <img src={block.image} alt="" />}
+                          {block.eyebrow && <small>{block.eyebrow}</small>}
+                          {block.title && <h3>{block.title}</h3>}
+                          {block.text && <p>{block.text}</p>}
+                        </>
+                      )}
+                      {(block.type === "cards" || block.type === "timeline" || block.type === "facts") && (
+                        <>
+                          {block.title && <h3>{block.title}</h3>}
+                          {(block.items ?? []).slice(0, 3).map((item, itemIndex) => (
+                            <div className="admin-preview-block-item" key={`preview-item-${itemIndex}`}>
+                              {item.image && <img src={item.image} alt="" />}
+                              {(item.eyebrow || item.date || item.label) && (
+                                <small>{item.eyebrow || item.date || item.label}</small>
+                              )}
+                              {item.title && <strong>{item.title}</strong>}
+                              {(item.text || item.value) && <p>{item.text || item.value}</p>}
+                            </div>
+                          ))}
+                        </>
+                      )}
+                      {block.type === "gallery" && (
+                        <div className="admin-preview-gallery">
+                          {(block.items ?? []).slice(0, 3).map((item, itemIndex) => (
+                            <div key={`preview-gallery-${itemIndex}`}>
+                              {item.image && <img src={item.image} alt="" />}
+                              <small>{item.caption}</small>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {block.type === "text" && (
+                        <>
+                          {block.title && <h3>{block.title}</h3>}
+                          {block.text && <p>{block.text}</p>}
+                        </>
+                      )}
+                      {block.type === "quote" && (
+                        <>
+                          {block.text && <p>“{block.text}”</p>}
+                          {block.cite && <small>{block.cite}</small>}
+                        </>
+                      )}
+                    </article>
+                  ))}
                 </div>
               )}
               {sections.length > 0 && (

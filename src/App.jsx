@@ -21,6 +21,10 @@ const pageMetadata = {
     description:
       "Hồ sơ Karina (Yu Ji-min) — trưởng nhóm aespa, nghệ sĩ solo và gương mặt đa tài của K-pop.",
   },
+  "/admin": {
+    title: "Dashboard | Karina in focus",
+    description: "Dashboard quản lý nội dung website Karina in focus.",
+  },
   "/profile.html": {
     title: `${content.pages.profile.title} | Karina in focus`,
     description: content.pages.profile.description,
@@ -47,7 +51,8 @@ function App() {
   const location = useLocation();
 
   useEffect(() => {
-    const metadata = pageMetadata[location.pathname] ?? pageMetadata["/"];
+    const pagePath = location.pathname.replace(/\/+$/, "") || "/";
+    const metadata = pageMetadata[pagePath] ?? pageMetadata["/"];
     document.title = metadata.title;
     document
       .querySelector('meta[name="description"]')

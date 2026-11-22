@@ -84,6 +84,72 @@ function validContent(content) {
           ) &&
           isSafeUrl(section.image),
       ));
+  const validStringFields = (value, fields) =>
+    value &&
+    fields.every(([field, limit = 5000]) =>
+      typeof value[field] === "string" && value[field].length <= limit,
+    );
+  const validItems = (items, fields, urls = []) =>
+    Array.isArray(items) &&
+    items.length <= 30 &&
+    items.every((item) =>
+      validStringFields(item, fields) && urls.every((field) => isSafeUrl(item[field])),
+    );
+  const validBlocks = (blocks) =>
+    blocks === undefined ||
+    (Array.isArray(blocks) &&
+      blocks.length <= 30 &&
+      blocks.every((block) => {
+        if (!block || typeof block !== "object") return false;
+        if (block.type === "feature") {
+          return (
+            validStringFields(block, [
+              ["eyebrow", 1000], ["title", 1000], ["text"], ["image", 1000],
+              ["imageAlt", 1000], ["credit", 1000], ["creditUrl", 1000],
+              ["linkLabel", 1000], ["linkUrl", 1000],
+            ]) &&
+            isSafeUrl(block.image) &&
+            isSafeUrl(block.creditUrl) &&
+            isSafeUrl(block.linkUrl)
+          );
+        }
+        if (block.type === "cards") {
+          return (
+            validStringFields(block, [["eyebrow", 1000], ["title", 1000], ["description"]]) &&
+            ["cards", "interests"].includes(block.variant) &&
+            validItems(block.items, [["eyebrow", 1000], ["title", 1000], ["text"], ["icon", 100]])
+          );
+        }
+        if (block.type === "timeline") {
+          return (
+            validStringFields(block, [["eyebrow", 1000], ["title", 1000], ["description"]]) &&
+            validItems(block.items, [["date", 100], ["title", 1000], ["text"]])
+          );
+        }
+        if (block.type === "gallery") {
+          return (
+            validStringFields(block, [["eyebrow", 1000], ["title", 1000], ["description"]]) &&
+            validItems(
+              block.items,
+              [["image", 1000], ["imageAlt", 1000], ["caption", 1000], ["credit", 1000], ["creditUrl", 1000]],
+              ["image", "creditUrl"],
+            )
+          );
+        }
+        if (block.type === "facts") {
+          return (
+            validStringFields(block, [["title", 1000]]) &&
+            validItems(block.items, [["label", 1000], ["value", 1000]])
+          );
+        }
+        if (block.type === "text") {
+          return validStringFields(block, [["eyebrow", 1000], ["title", 1000], ["text"]]);
+        }
+        if (block.type === "quote") {
+          return validStringFields(block, [["text"], ["cite", 1000]]);
+        }
+        return false;
+      }));
   return (
     homeFields.every(
       (key) =>
@@ -101,6 +167,7 @@ function validContent(content) {
             typeof content.pages[key][field] === "string" &&
             content.pages[key][field].length <= 10000,
         ) &&
+        validBlocks(content.pages[key].blocks) &&
         validSections(content.pages[key].sections),
     ) &&
     content.stats.length <= 8 &&
